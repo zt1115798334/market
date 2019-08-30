@@ -39,21 +39,12 @@ public class VoStorageUser implements Serializable {
      */
     @ApiModelProperty(value = "手机号")
     private String phone;
-    /**
-     * 邮箱
-     */
-    @ApiModelProperty(value = "邮箱")
-    @Email(message = "邮箱格式错误")
-    private String email;
+
     /**
      * 性别
      */
     @ApiModelProperty(value = "性别")
     @Sex
     private Short sex;
-    /**
-     * 学校
-     */
-    @ApiModelProperty(value = "学校")
-    private String school;
+
 }

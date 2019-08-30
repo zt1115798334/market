@@ -1,6 +1,7 @@
 package com.example.market.common.mysql.service;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.market.common.base.service.BaseService;
 import com.example.market.common.mysql.entity.FruitsType;
 
@@ -14,5 +15,7 @@ import java.util.List;
  * description:
  */
 public interface FruitsTypeService extends BaseService<FruitsType, Long> {
+
+    JSONObject findFruitsType();
 
 }

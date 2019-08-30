@@ -54,10 +54,6 @@ public class User extends IdPageEntity {
     private String phone;
 
     /**
-     * 邮箱
-     */
-    private String email;
-    /**
      * 性别
      */
     private Short sex;
@@ -65,15 +61,6 @@ public class User extends IdPageEntity {
      * 积分
      */
     private Long integral;
-
-    /**
-     * 学校
-     */
-    private String school;
-    /**
-     * 学校地址
-     */
-    private String schoolAddress;
 
     /**
      * 账户状态：{0：冻结,1:正常}
@@ -116,12 +103,10 @@ public class User extends IdPageEntity {
         this.accountType = accountType;
     }
 
-    public User(String userName, String personalSignature, String phone, String email, Short sex, String school) {
+    public User(String userName, String personalSignature, String phone,  Short sex) {
         this.userName = userName;
         this.personalSignature = personalSignature;
         this.phone = phone;
-        this.email = email;
         this.sex = sex;
-        this.school = school;
     }
 }

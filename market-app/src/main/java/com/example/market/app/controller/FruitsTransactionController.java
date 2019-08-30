@@ -51,6 +51,8 @@ import static com.example.market.common.constant.SysConst.TopicType;
 @RequestMapping("app/fruitsTransaction")
 public class FruitsTransactionController extends AbstractController implements CurrentUser, ConstantService {
 
+    private final FruitsTypeService fruitsTypeService;
+
     private final FruitsTransactionService fruitsTransactionService;
 
     private final TopicImgService topicImgService;
@@ -62,6 +64,18 @@ public class FruitsTransactionController extends AbstractController implements C
     private final ZanService zanService;
 
     private final CollectionService collectionService;
+
+
+    @ApiOperation(value = "查询水果分类信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "authorization", dataType = "String"),
+            @ApiImplicitParam(paramType = "header", name = "deviceInfo", dataType = "String", defaultValue = "mobile")
+    })
+    @PostMapping(value = "findFruitsType")
+    public ResultMessage findFruitsType() {
+        JSONObject fruitsType = fruitsTypeService.findFruitsType();
+        return success(fruitsType);
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // 发布
@@ -94,7 +108,7 @@ public class FruitsTransactionController extends AbstractController implements C
     public ResultMessage saveFruitsTransactionImg(HttpServletRequest request) {
         Long topicId = Long.valueOf(request.getParameter("topicId"));
         fruitsTransactionService.modifyFruitsTransactionSateToNewRelease(topicId);
-        topicImgService.saveTopicImgFile(request, topicId, TOPIC_TYPE_1);
+        topicImgService.saveTopicImgFile(request, topicId, FRUITS_TRANSACTION);
         return success("保存成功");
     }
 
@@ -180,7 +194,7 @@ public class FruitsTransactionController extends AbstractController implements C
     @DistributedLock
     public ResultMessage enableFruitsTransactionZanOn(@NotNull(message = "id不能为空") @RequestParam Long id,
                                                 @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        zanService.enableOnZan(id, TOPIC_TYPE_1, ZAN_TOPIC, getCurrentUserId(), fromUserId);
+        zanService.enableOnZan(id, FRUITS_TRANSACTION, ZAN_TOPIC, getCurrentUserId(), fromUserId);
         return success("保存成功");
     }
 
@@ -194,7 +208,7 @@ public class FruitsTransactionController extends AbstractController implements C
     @DistributedLock
     public ResultMessage enableFruitsTransactionZanOff(@NotNull(message = "id不能为空") @RequestParam Long id,
                                                  @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        zanService.enableOffZan(id, TOPIC_TYPE_1, ZAN_TOPIC, getCurrentUserId(), fromUserId);
+        zanService.enableOffZan(id, FRUITS_TRANSACTION, ZAN_TOPIC, getCurrentUserId(), fromUserId);
         return success("保存成功");
     }
 
@@ -210,7 +224,7 @@ public class FruitsTransactionController extends AbstractController implements C
     @SaveLog(desc = "保存水果交易信息收藏")
     @DistributedLock
     public ResultMessage enableFruitsTransactionCollectionOn(@NotNull(message = "id不能为空") @RequestParam Long id) {
-        collectionService.enableOnCollection(getCurrentUserId(), id, TOPIC_TYPE_1);
+        collectionService.enableOnCollection(getCurrentUserId(), id, FRUITS_TRANSACTION);
         return success("保存成功");
     }
 
@@ -223,7 +237,7 @@ public class FruitsTransactionController extends AbstractController implements C
     @SaveLog(desc = "保存水果交易信息取消收藏")
     @DistributedLock
     public ResultMessage enableFruitsTransactionCollectionOff(@NotNull(message = "id不能为空") @RequestParam Long id) {
-        collectionService.enableOffCollection(getCurrentUserId(), id, TOPIC_TYPE_1);
+        collectionService.enableOffCollection(getCurrentUserId(), id, FRUITS_TRANSACTION);
         return success("保存成功");
     }
 
@@ -238,7 +252,7 @@ public class FruitsTransactionController extends AbstractController implements C
     @PostMapping(value = "findFruitsTransactionComment")
     public ResultMessage findFruitsTransactionComment(@RequestBody VoCommentPage voCommentPage) {
         Comment comment = VoChangeEntityUtils.changeComment(voCommentPage);
-        comment.setTopicType(TopicType.TOPIC_TYPE_1.getCode());
+        comment.setTopicType(FRUITS_TRANSACTION);
         PageImpl<RoCommentStatus> roCommentStatusPage = commentService.findRoCommentStatusPage(comment, getCurrentUserId());
         return success(roCommentStatusPage.getPageable().getPageNumber(), roCommentStatusPage.getPageable().getPageSize(), roCommentStatusPage.getTotalElements(), roCommentStatusPage.getContent());
     }
@@ -250,7 +264,7 @@ public class FruitsTransactionController extends AbstractController implements C
     })
     @PostMapping(value = "findFruitsTransactionCommentCount")
     public ResultMessage findFruitsTransactionCommentCount(@NotNull(message = "topicId不能为空") @RequestParam Long topicId) {
-        JSONObject result = commentService.countComment(topicId, TopicType.TOPIC_TYPE_1.getCode());
+        JSONObject result = commentService.countComment(topicId, FRUITS_TRANSACTION);
         return success(result);
     }
 
@@ -273,7 +287,7 @@ public class FruitsTransactionController extends AbstractController implements C
     @PostMapping(value = "findFruitsTransactionCommentAndReply")
     public ResultMessage findFruitsTransactionCommentAndReply(@RequestBody VoCommentPage voCommentPage) {
         Comment comment = VoChangeEntityUtils.changeComment(voCommentPage);
-        comment.setTopicType(TopicType.TOPIC_TYPE_1.getCode());
+        comment.setTopicType(FRUITS_TRANSACTION);
         PageImpl<RoCommentStatus> roCommentStatusPage = commentService.findRoCommentAndReplyStatusPage(comment, getCurrentUserId());
         return success(roCommentStatusPage.getPageable().getPageNumber(), roCommentStatusPage.getPageable().getPageSize(), roCommentStatusPage.getTotalElements(), roCommentStatusPage.getContent());
     }
@@ -292,7 +306,7 @@ public class FruitsTransactionController extends AbstractController implements C
     public ResultMessage saveFruitsTransactionComment(@NotNull(message = "topicId不能为空") @RequestParam Long topicId,
                                                 @NotEmpty(message = "content不能为空") @RequestParam String content,
                                                 @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        Comment comment = commentService.saveComment(topicId, TOPIC_TYPE_1, content, getCurrentUserId(), fromUserId);
+        Comment comment = commentService.saveComment(topicId, FRUITS_TRANSACTION, content, getCurrentUserId(), fromUserId);
         return success("保存成功", comment);
     }
 
@@ -308,7 +322,7 @@ public class FruitsTransactionController extends AbstractController implements C
                                                               @NotNull(message = "commentId不能为空") @RequestParam Long commentId,
                                                               @NotEmpty(message = "content不能为空") @RequestParam String content,
                                                               @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        CommentReply commentReply = commentReplyService.saveCommentReplyToComment(topicId, TOPIC_TYPE_1, commentId, commentId, content, getCurrentUserId(), fromUserId);
+        CommentReply commentReply = commentReplyService.saveCommentReplyToComment(topicId, FRUITS_TRANSACTION, commentId, commentId, content, getCurrentUserId(), fromUserId);
         return success("保存成功", commentReply);
     }
 
@@ -325,7 +339,7 @@ public class FruitsTransactionController extends AbstractController implements C
                                                             @NotNull(message = "replyId不能为空") @RequestParam Long replyId,
                                                             @NotEmpty(message = "content不能为空") @RequestParam String content,
                                                             @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        CommentReply commentReply = commentReplyService.saveCommentReplyToReply(topicId, TOPIC_TYPE_1, commentId, replyId, content, getCurrentUserId(), fromUserId);
+        CommentReply commentReply = commentReplyService.saveCommentReplyToReply(topicId, FRUITS_TRANSACTION, commentId, replyId, content, getCurrentUserId(), fromUserId);
         return success("保存成功", commentReply);
     }
 
@@ -342,7 +356,7 @@ public class FruitsTransactionController extends AbstractController implements C
     @DistributedLock
     public ResultMessage enableFruitsTransactionCommentZanOn(@NotNull(message = "id不能为空") @RequestParam Long id,
                                                        @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        zanService.enableOnZan(id, TOPIC_TYPE_1, ZAN_COMMENT, getCurrentUserId(), fromUserId);
+        zanService.enableOnZan(id, FRUITS_TRANSACTION, ZAN_COMMENT, getCurrentUserId(), fromUserId);
         return success("保存成功");
     }
 
@@ -356,7 +370,7 @@ public class FruitsTransactionController extends AbstractController implements C
     @DistributedLock
     public ResultMessage enableFruitsTransactionCommentZanOff(@NotNull(message = "id不能为空") @RequestParam Long id,
                                                         @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        zanService.enableOffZan(id, TOPIC_TYPE_1, ZAN_COMMENT, getCurrentUserId(), fromUserId);
+        zanService.enableOffZan(id, FRUITS_TRANSACTION, ZAN_COMMENT, getCurrentUserId(), fromUserId);
         return success("保存成功");
     }
 

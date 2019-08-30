@@ -35,8 +35,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static com.example.market.common.constant.SysConst.TopicType;
-
 /**
  * Created with IntelliJ IDEA.
  *
@@ -51,6 +49,8 @@ import static com.example.market.common.constant.SysConst.TopicType;
 @RequestMapping("app/grainTransaction")
 public class GrainTransactionController extends AbstractController implements CurrentUser, ConstantService {
 
+    private final GrainTypeService grainTypeService;
+
     private final GrainTransactionService grainTransactionService;
 
     private final TopicImgService topicImgService;
@@ -62,6 +62,18 @@ public class GrainTransactionController extends AbstractController implements Cu
     private final ZanService zanService;
 
     private final CollectionService collectionService;
+
+
+    @ApiOperation(value = "查询农作物分类信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "authorization", dataType = "String"),
+            @ApiImplicitParam(paramType = "header", name = "deviceInfo", dataType = "String", defaultValue = "mobile")
+    })
+    @PostMapping(value = "findGrainType")
+    public ResultMessage findGrainType() {
+        JSONObject fruitsType = grainTypeService.findGrainType();
+        return success(fruitsType);
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // 发布
@@ -94,7 +106,7 @@ public class GrainTransactionController extends AbstractController implements Cu
     public ResultMessage saveGrainTransactionImg(HttpServletRequest request) {
         Long topicId = Long.valueOf(request.getParameter("topicId"));
         grainTransactionService.modifyGrainTransactionSateToNewRelease(topicId);
-        topicImgService.saveTopicImgFile(request, topicId, TOPIC_TYPE_1);
+        topicImgService.saveTopicImgFile(request, topicId, GRAIN_TRANSACTION);
         return success("保存成功");
     }
 
@@ -179,8 +191,8 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息点赞")
     @DistributedLock
     public ResultMessage enableGrainTransactionZanOn(@NotNull(message = "id不能为空") @RequestParam Long id,
-                                                @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        zanService.enableOnZan(id, TOPIC_TYPE_1, ZAN_TOPIC, getCurrentUserId(), fromUserId);
+                                                     @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
+        zanService.enableOnZan(id, GRAIN_TRANSACTION, ZAN_TOPIC, getCurrentUserId(), fromUserId);
         return success("保存成功");
     }
 
@@ -193,8 +205,8 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息取消点赞")
     @DistributedLock
     public ResultMessage enableGrainTransactionZanOff(@NotNull(message = "id不能为空") @RequestParam Long id,
-                                                 @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        zanService.enableOffZan(id, TOPIC_TYPE_1, ZAN_TOPIC, getCurrentUserId(), fromUserId);
+                                                      @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
+        zanService.enableOffZan(id, GRAIN_TRANSACTION, ZAN_TOPIC, getCurrentUserId(), fromUserId);
         return success("保存成功");
     }
 
@@ -210,7 +222,7 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息收藏")
     @DistributedLock
     public ResultMessage enableGrainTransactionCollectionOn(@NotNull(message = "id不能为空") @RequestParam Long id) {
-        collectionService.enableOnCollection(getCurrentUserId(), id, TOPIC_TYPE_1);
+        collectionService.enableOnCollection(getCurrentUserId(), id, GRAIN_TRANSACTION);
         return success("保存成功");
     }
 
@@ -223,7 +235,7 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息取消收藏")
     @DistributedLock
     public ResultMessage enableGrainTransactionCollectionOff(@NotNull(message = "id不能为空") @RequestParam Long id) {
-        collectionService.enableOffCollection(getCurrentUserId(), id, TOPIC_TYPE_1);
+        collectionService.enableOffCollection(getCurrentUserId(), id, GRAIN_TRANSACTION);
         return success("保存成功");
     }
 
@@ -238,7 +250,7 @@ public class GrainTransactionController extends AbstractController implements Cu
     @PostMapping(value = "findGrainTransactionComment")
     public ResultMessage findGrainTransactionComment(@RequestBody VoCommentPage voCommentPage) {
         Comment comment = VoChangeEntityUtils.changeComment(voCommentPage);
-        comment.setTopicType(TopicType.TOPIC_TYPE_1.getCode());
+        comment.setTopicType(GRAIN_TRANSACTION);
         PageImpl<RoCommentStatus> roCommentStatusPage = commentService.findRoCommentStatusPage(comment, getCurrentUserId());
         return success(roCommentStatusPage.getPageable().getPageNumber(), roCommentStatusPage.getPageable().getPageSize(), roCommentStatusPage.getTotalElements(), roCommentStatusPage.getContent());
     }
@@ -250,7 +262,7 @@ public class GrainTransactionController extends AbstractController implements Cu
     })
     @PostMapping(value = "findGrainTransactionCommentCount")
     public ResultMessage findGrainTransactionCommentCount(@NotNull(message = "topicId不能为空") @RequestParam Long topicId) {
-        JSONObject result = commentService.countComment(topicId, TopicType.TOPIC_TYPE_1.getCode());
+        JSONObject result = commentService.countComment(topicId, GRAIN_TRANSACTION);
         return success(result);
     }
 
@@ -273,7 +285,7 @@ public class GrainTransactionController extends AbstractController implements Cu
     @PostMapping(value = "findGrainTransactionCommentAndReply")
     public ResultMessage findGrainTransactionCommentAndReply(@RequestBody VoCommentPage voCommentPage) {
         Comment comment = VoChangeEntityUtils.changeComment(voCommentPage);
-        comment.setTopicType(TopicType.TOPIC_TYPE_1.getCode());
+        comment.setTopicType(GRAIN_TRANSACTION);
         PageImpl<RoCommentStatus> roCommentStatusPage = commentService.findRoCommentAndReplyStatusPage(comment, getCurrentUserId());
         return success(roCommentStatusPage.getPageable().getPageNumber(), roCommentStatusPage.getPageable().getPageSize(), roCommentStatusPage.getTotalElements(), roCommentStatusPage.getContent());
     }
@@ -290,9 +302,9 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息评论")
     @DistributedLock
     public ResultMessage saveGrainTransactionComment(@NotNull(message = "topicId不能为空") @RequestParam Long topicId,
-                                                @NotEmpty(message = "content不能为空") @RequestParam String content,
-                                                @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        Comment comment = commentService.saveComment(topicId, TOPIC_TYPE_1, content, getCurrentUserId(), fromUserId);
+                                                     @NotEmpty(message = "content不能为空") @RequestParam String content,
+                                                     @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
+        Comment comment = commentService.saveComment(topicId, GRAIN_TRANSACTION, content, getCurrentUserId(), fromUserId);
         return success("保存成功", comment);
     }
 
@@ -305,10 +317,10 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息回复")
     @DistributedLock
     public ResultMessage saveGrainTransactionCommentReplyToComment(@NotNull(message = "topicId不能为空") @RequestParam Long topicId,
-                                                              @NotNull(message = "commentId不能为空") @RequestParam Long commentId,
-                                                              @NotEmpty(message = "content不能为空") @RequestParam String content,
-                                                              @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        CommentReply commentReply = commentReplyService.saveCommentReplyToComment(topicId, TOPIC_TYPE_1, commentId, commentId, content, getCurrentUserId(), fromUserId);
+                                                                   @NotNull(message = "commentId不能为空") @RequestParam Long commentId,
+                                                                   @NotEmpty(message = "content不能为空") @RequestParam String content,
+                                                                   @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
+        CommentReply commentReply = commentReplyService.saveCommentReplyToComment(topicId, GRAIN_TRANSACTION, commentId, commentId, content, getCurrentUserId(), fromUserId);
         return success("保存成功", commentReply);
     }
 
@@ -321,11 +333,11 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息回复的回复")
     @DistributedLock
     public ResultMessage saveGrainTransactionCommentReplyToReply(@NotNull(message = "topicId不能为空") @RequestParam Long topicId,
-                                                            @NotNull(message = "commentId不能为空") @RequestParam Long commentId,
-                                                            @NotNull(message = "replyId不能为空") @RequestParam Long replyId,
-                                                            @NotEmpty(message = "content不能为空") @RequestParam String content,
-                                                            @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        CommentReply commentReply = commentReplyService.saveCommentReplyToReply(topicId, TOPIC_TYPE_1, commentId, replyId, content, getCurrentUserId(), fromUserId);
+                                                                 @NotNull(message = "commentId不能为空") @RequestParam Long commentId,
+                                                                 @NotNull(message = "replyId不能为空") @RequestParam Long replyId,
+                                                                 @NotEmpty(message = "content不能为空") @RequestParam String content,
+                                                                 @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
+        CommentReply commentReply = commentReplyService.saveCommentReplyToReply(topicId, GRAIN_TRANSACTION, commentId, replyId, content, getCurrentUserId(), fromUserId);
         return success("保存成功", commentReply);
     }
 
@@ -341,8 +353,8 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息评论点赞")
     @DistributedLock
     public ResultMessage enableGrainTransactionCommentZanOn(@NotNull(message = "id不能为空") @RequestParam Long id,
-                                                       @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        zanService.enableOnZan(id, TOPIC_TYPE_1, ZAN_COMMENT, getCurrentUserId(), fromUserId);
+                                                            @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
+        zanService.enableOnZan(id, GRAIN_TRANSACTION, ZAN_COMMENT, getCurrentUserId(), fromUserId);
         return success("保存成功");
     }
 
@@ -355,8 +367,8 @@ public class GrainTransactionController extends AbstractController implements Cu
     @SaveLog(desc = "保存农作物交易信息点赞")
     @DistributedLock
     public ResultMessage enableGrainTransactionCommentZanOff(@NotNull(message = "id不能为空") @RequestParam Long id,
-                                                        @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
-        zanService.enableOffZan(id, TOPIC_TYPE_1, ZAN_COMMENT, getCurrentUserId(), fromUserId);
+                                                             @NotNull(message = "fromUserId不能为空") @RequestParam Long fromUserId) {
+        zanService.enableOffZan(id, GRAIN_TRANSACTION, ZAN_COMMENT, getCurrentUserId(), fromUserId);
         return success("保存成功");
     }
 

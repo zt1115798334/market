@@ -22,9 +22,7 @@ public class VoChangeEntityUtils {
         return new User(voStorageUser.getUserName(),
                 voStorageUser.getPersonalSignature(),
                 voStorageUser.getPhone(),
-                voStorageUser.getEmail(),
-                voStorageUser.getSex(),
-                voStorageUser.getSchool());
+                voStorageUser.getSex());
     }
 
     public static Comment changeComment(VoCommentPage commentPage) {

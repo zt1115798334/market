@@ -44,7 +44,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public RoFruitsTransaction resultRoFruitsTransaction(FruitsTransaction fruitsTransaction, Long userId) {
         List<Long> topicId = Collections.singletonList(fruitsTransaction.getId());
-        RoTopicMap topicMethod = getTopicMethod(Collections.singletonList(fruitsTransaction.getUserId()), userId, topicId, TOPIC_TYPE_1);
+        RoTopicMap topicMethod = getTopicMethod(Collections.singletonList(fruitsTransaction.getUserId()), userId, topicId, FRUITS_TRANSACTION);
         return RoChangeEntityUtils.resultRoFruitsTransaction(fruitsTransaction, userId, topicMethod);
     }
 
@@ -52,7 +52,7 @@ public class TopicServiceImpl implements TopicService {
     public PageImpl<RoFruitsTransaction> resultRoFruitsTransactionPage(Page<FruitsTransaction> page, Long userId) {
         List<Long> topicId = page.stream().map(FruitsTransaction::getId).collect(toList());
         List<Long> userIdList = page.stream().map(FruitsTransaction::getUserId).distinct().collect(toList());
-        RoTopicMap topicMethod = getTopicMethod(userIdList, userId, topicId, TOPIC_TYPE_1);
+        RoTopicMap topicMethod = getTopicMethod(userIdList, userId, topicId, FRUITS_TRANSACTION);
         List<RoFruitsTransaction> roFruitsTransactionList = RoChangeEntityUtils
                 .resultRoFruitsTransaction(page.getContent(), userId, topicMethod);
         return new PageImpl<>(roFruitsTransactionList, page.getPageable(), page.getTotalElements());
@@ -61,7 +61,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public RoGrainTransaction resultRoGrainTransaction(GrainTransaction grainTransaction, Long userId) {
         List<Long> topicId = Collections.singletonList(grainTransaction.getId());
-        RoTopicMap topicMethod = getTopicMethod(Collections.singletonList(grainTransaction.getUserId()), userId, topicId, TOPIC_TYPE_1);
+        RoTopicMap topicMethod = getTopicMethod(Collections.singletonList(grainTransaction.getUserId()), userId, topicId, GRAIN_TRANSACTION);
         return RoChangeEntityUtils.resultRoGrainTransaction(grainTransaction, userId, topicMethod);
     }
 
@@ -69,7 +69,7 @@ public class TopicServiceImpl implements TopicService {
     public PageImpl<RoGrainTransaction> resultRoGrainTransactionPage(Page<GrainTransaction> page, Long userId) {
         List<Long> topicId = page.stream().map(GrainTransaction::getId).collect(toList());
         List<Long> userIdList = page.stream().map(GrainTransaction::getUserId).distinct().collect(toList());
-        RoTopicMap topicMethod = getTopicMethod(userIdList, userId, topicId, TOPIC_TYPE_1);
+        RoTopicMap topicMethod = getTopicMethod(userIdList, userId, topicId, GRAIN_TRANSACTION);
         List<RoGrainTransaction> roGrainTransactionList = RoChangeEntityUtils
                 .resultRoGrainTransaction(page.getContent(), userId, topicMethod);
         return new PageImpl<>(roGrainTransactionList, page.getPageable(), page.getTotalElements());

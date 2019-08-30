@@ -94,7 +94,7 @@ public class UserUtils {
     }
 
     public static String getDefaultUserName(String phone) {
-        return SysConst.DEFAULT_USERNAME + phone.substring(phone.length() - 4);
+        return DEFAULT_USER_NAME + phone.substring(phone.length() - 4);
     }
 
     public static void main(String[] args) {

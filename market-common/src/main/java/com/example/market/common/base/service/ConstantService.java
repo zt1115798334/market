@@ -27,16 +27,6 @@ public interface ConstantService {
     Short DELETED = SysConst.DeleteState.DELETE.getCode();
 
     /**
-     * 隐藏
-     */
-    Short HIDE = SysConst.ShowState.HIDE.getCode();
-
-    /**
-     * 显示
-     */
-    Short DISPLAY = SysConst.ShowState.DISPLAY.getCode();
-
-    /**
      * 关
      */
     short OFF = SysConst.EnabledState.OFF.getCode();
@@ -45,16 +35,6 @@ public interface ConstantService {
      * 开
      */
     short ON = SysConst.EnabledState.ON.getCode();
-
-    /**
-     * 正序
-     */
-    String ASC = SysConst.SortOrder.ASC.getCode();
-
-    /**
-     * 倒叙
-     */
-    String DESC = SysConst.SortOrder.DESC.getCode();
 
     /**
      * 发布中
@@ -77,11 +57,8 @@ public interface ConstantService {
      */
     String LOWER_SHELF = SysConst.State.LOWER_SHELF.getType();
 
-    Short TOPIC_TYPE_1 = SysConst.TopicType.TOPIC_TYPE_1.getCode();
-    Short TOPIC_TYPE_2 = SysConst.TopicType.TOPIC_TYPE_2.getCode();
-    Short TOPIC_TYPE_3 = SysConst.TopicType.TOPIC_TYPE_3.getCode();
-    Short TOPIC_TYPE_4 = SysConst.TopicType.TOPIC_TYPE_4.getCode();
-    Short TOPIC_TYPE_5 = SysConst.TopicType.TOPIC_TYPE_5.getCode();
+    Short FRUITS_TRANSACTION = SysConst.TopicType.FRUITS_TRANSACTION.getCode();
+    Short GRAIN_TRANSACTION = SysConst.TopicType.GRAIN_TRANSACTION.getCode();
 
     Short ZAN_TOPIC = SysConst.ZanType.ZAN_TOPIC.getCode();
     Short ZAN_COMMENT = SysConst.ZanType.ZAN_COMMENT.getCode();

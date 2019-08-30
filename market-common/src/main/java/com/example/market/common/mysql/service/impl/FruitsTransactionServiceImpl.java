@@ -22,7 +22,8 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.market.common.base.service.SearchFilter.*;
+import static com.example.market.common.base.service.SearchFilter.Operator;
+import static com.example.market.common.base.service.SearchFilter.bySearchFilter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -148,7 +149,7 @@ public class FruitsTransactionServiceImpl implements FruitsTransactionService {
 
     @Override
     public PageImpl<RoFruitsTransaction> findFruitsTransactionCollectionPage(CustomPage customPage, Long userId) {
-        PageImpl<Long> topicIdPage = collectionService.findCollection(userId, TOPIC_TYPE_1, customPage);
+        PageImpl<Long> topicIdPage = collectionService.findCollection(userId, FRUITS_TRANSACTION, customPage);
         List<FruitsTransaction> FruitsTransactionList = this.findByIdsNotDelete(topicIdPage.getContent());
         return topicService.resultRoFruitsTransactionPage(new PageImpl<>(FruitsTransactionList, topicIdPage.getPageable(), topicIdPage.getTotalElements()),
                 userId);

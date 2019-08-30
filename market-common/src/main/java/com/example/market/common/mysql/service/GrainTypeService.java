@@ -1,6 +1,7 @@
 package com.example.market.common.mysql.service;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.market.common.base.service.BaseService;
 import com.example.market.common.mysql.entity.GrainType;
 
@@ -12,5 +13,7 @@ import com.example.market.common.mysql.entity.GrainType;
  * description:
  */
 public interface GrainTypeService extends BaseService<GrainType, Long> {
+
+    JSONObject findGrainType();
 
 }

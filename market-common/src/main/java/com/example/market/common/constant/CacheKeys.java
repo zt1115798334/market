@@ -68,6 +68,16 @@ public class CacheKeys {
     private static final String PREFIX_VERIFICATION_CODE_IP_IS_LOCK = "verification_code_ip:count_is_lock_";
 
     /**
+     * 获取水果分类
+     */
+    private static final String PREFIX_FRUITS_TYPE = "fruits_type";
+
+    /**
+     * 获取粮食分类
+     */
+    private static final String PREFIX_GRAIN_TYPE = "grain_type";
+
+    /**
      * 用户登录次数计数
      *
      * @param phone 手机号
@@ -177,4 +187,18 @@ public class CacheKeys {
         return PREFIX_VERIFICATION_CODE_IP_IS_LOCK + ip;
     }
 
+    /**
+     * 获取粮食分类
+     * @return key
+     */
+    public static String getFruitsTypeKey() {
+        return PREFIX_FRUITS_TYPE;
+    }
+    /**
+     * 获取水果分类
+     * @return key
+     */
+    public static String getGrainTypeKey() {
+        return PREFIX_GRAIN_TYPE;
+    }
 }

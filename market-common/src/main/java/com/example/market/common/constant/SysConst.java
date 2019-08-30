@@ -1,14 +1,11 @@
 package com.example.market.common.constant;
 
-import com.google.common.base.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,14 +19,10 @@ public class SysConst {
     public static final String ORIGINAL_IMAGE_FILE_URL = "/app/file/findOriginalImg?topicImgId=";
     public static final String COMPRESS_IMAGE_FILE_URL = "/app/file/findCompressImg?topicImgId=";
 
-    public static final String QUESTION_BANK_PDF_FILE_URL = "/app/file/findQuestionBankPdfHtml?topicFileId=";
-
     public static final int DEFAULT_BATCH_SIZE = 200;
     public static final String DEFAULT_SORT_NAME = "createdTime";
 
-    public static final String DEFAULT_USERNAME = "时光";
     public static final Long DEFAULT_INTEGRAL = 100L;
-    public static final String DEFAULT_PASSWORD = "123456";
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -78,7 +71,7 @@ public class SysConst {
     public enum SortOrder {
 
         ASC("asc"),
-        DESC("describeContent");
+        DESC("desc");
 
         private String code;
     }
@@ -129,27 +122,6 @@ public class SysConst {
     }
 
     /**
-     * 显示状态
-     */
-    @Getter
-    @AllArgsConstructor
-    public enum ShowState {
-
-        HIDE((short) 0, "hide", "隐藏"),
-        DISPLAY((short) 1, "display", "显示");
-
-        private Short code;
-        private String type;
-        private String name;
-    }
-
-    public static Optional<ShowState> getShowStateByCode(Short code) {
-        return Arrays.stream(ShowState.values())
-                .filter(replyType -> Objects.equal(code, replyType.getCode()))
-                .findFirst();
-    }
-
-    /**
      * 开启状态
      */
     @Getter
@@ -162,16 +134,6 @@ public class SysConst {
         private Short code;
         private String name;
 
-    }
-
-    private static Optional<EnabledState> getEnabledStateByCode(Short code) {
-        return Arrays.stream(EnabledState.values())
-                .filter(replyType -> code.equals(replyType.getCode()))
-                .findFirst();
-    }
-
-    public static String getEnabledStateNameByCode(Short code) {
-        return getEnabledStateByCode(code).orElse(EnabledState.ON).getName();
     }
 
     /**
@@ -187,12 +149,6 @@ public class SysConst {
 
         private String type;
         private String name;
-    }
-
-    public static Optional<VerificationCodeType> getVerificationCodeTypeByType(String type) {
-        return Arrays.stream(VerificationCodeType.values())
-                .filter(replyType -> Objects.equal(type, replyType.getType()))
-                .findFirst();
     }
 
     /**
@@ -230,7 +186,6 @@ public class SysConst {
 
         AJAX("ajax", "ajax登陆"),
         TOKEN("token", "token登陆"),
-        ONE_CLICK("oneClick", "token登陆"),
         VERIFICATION_CODE("verificationCode", "验证码登陆");
 
         private String type;
@@ -253,12 +208,6 @@ public class SysConst {
 
     }
 
-    public static Optional<AccountState> getAccountStateByCode(Short code) {
-        return Arrays.stream(AccountState.values())
-                .filter(replyType -> Objects.equal(code, replyType.getCode()))
-                .findFirst();
-    }
-
     /**
      * 账户类型
      */
@@ -273,12 +222,6 @@ public class SysConst {
         private String name;
     }
 
-    public static Optional<AccountType> getAccountTypeByType(String type) {
-        return Arrays.stream(AccountType.values())
-                .filter(replyType -> StringUtils.equals(type, replyType.getType()))
-                .findFirst();
-    }
-
     /**
      * 账户类型
      */
@@ -291,6 +234,12 @@ public class SysConst {
 
         private String type;
         private String name;
+    }
+
+    public static Optional<AccountType> getAccountTypeByType(String type) {
+        return Arrays.stream(AccountType.values())
+                .filter(replyType -> StringUtils.equals(type, replyType.getType()))
+                .findFirst();
     }
 
     /**
@@ -368,11 +317,8 @@ public class SysConst {
     @Getter
     @AllArgsConstructor
     public enum TopicType {
-        TOPIC_TYPE_1((short) 1, "交易"),
-        TOPIC_TYPE_2((short) 2, "讯息"),
-        TOPIC_TYPE_3((short) 3, "问答"),
-        TOPIC_TYPE_4((short) 4, "题库"),
-        TOPIC_TYPE_5((short) 5, "时光");
+        FRUITS_TRANSACTION((short) 1, "水果交易"),
+        GRAIN_TRANSACTION((short) 2, "农产品交易");
 
         private Short code;
         private String name;
@@ -417,112 +363,34 @@ public class SysConst {
     }
 
     /**
-     * 星期
+     * 水果分类
      */
     @Getter
     @AllArgsConstructor
-    public enum Week {
+    public enum FruitsGroup {
+        BERRY((short) 1, "浆果类"),
+        CITRUS((short) 2, "柑橘类"),
+        DRUPE((short) 3, "核果类"),
+        KERNEL_FRUIT((short) 4, "仁果类"),
+        MELON((short) 5, "瓜类"),
+        OTHER((short) 6, "其他");
 
-        MON("mon", "星期一"),
-        TUE("tue", "星期二"),
-        WED("wed", "星期三"),
-        THU("thu", "星期四"),
-        FRI("fri", "星期五"),
-        SAT("sat", "星期六"),
-        SUN("sun", "星期天");
-
-        private String type;
+        private Short code;
         private String name;
-    }
-
-    public static List<String> getAllWeekType() {
-        return Arrays.stream(Week.values()).map(Week::getType).collect(Collectors.toList());
     }
 
     /**
-     * 课次
+     * 粮食分类
      */
     @Getter
     @AllArgsConstructor
-    public enum ClassTimes {
-        CLASS_ONE((short) 1, "第一节"),
-        CLASS_TWO((short) 2, "第二节"),
-        CLASS_THREE((short) 3, "第三节"),
-        CLASS_FOUR((short) 4, "第四节"),
-        CLASS_FIVE((short) 5, "第五节"),
-        CLASS_SIX((short) 6, "第六节");
+    public enum GrainGroup {
+        WHEAT((short) 1, "麦类"),
+        RICE((short) 2, "稻类"),
+        COARSE_GRAIN((short) 3, "粗粮类"),
+        OTHER((short) 4, "其他");
 
-        private short code;
+        private Short code;
         private String name;
     }
-
-    public static List<Short> getAllClassTimesCode() {
-        return Arrays.stream(ClassTimes.values()).map(ClassTimes::getCode).collect(Collectors.toList());
-    }
-
-    /**
-     * 课次
-     */
-    @Getter
-    @AllArgsConstructor
-    public enum UsableState {
-        AVAILABLE((short) 0, "可用"),
-        NOT_AVAILABLE((short) 1, "不可用");
-
-        private short code;
-        private String name;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public enum Color {
-
-        PANTONE_Yellow_U("#FFE800"),
-        PANTONE_Yellow_012_U("#FFE000"),
-        PANTONE_Orange_021_U("#FF6C2F"),
-        PANTONE_Bright_Red_U("#FE5442"),
-        PANTONE_2388_U("#3F5EA9"),
-        PANTONE_Warm_Red_U("#FF665E"),
-        PANTONE_Red_032_U("#F65058"),
-        PANTONE_Rubine_Red_U("#DB487E"),
-        PANTONE_Rhodamine_Red_U("#E44C9A"),
-        PANTONE_Pink_U("#D1428D"),
-        PANTONE_Purple_U("#BF53B6"),
-        PANTONE_Medium_Purple_U("#65428A"),
-        PANTONE_Violet_U("#7758B3"),
-        PANTONE_Blue_072_U("#3F43AD"),
-        PANTONE_Dark_Blue_U("#444795"),
-        PANTONE_Reflex_Blue_U("#39499C"),
-        PANTONE_Process_Blue_U("#0083C3"),
-        PANTONE_Green_U("#00AC8C"),
-        PANTONE_2070_U("#944B96"),
-        PANTONE_Black_U("#615D59"),
-        PANTONE_Yellow_0131_U("#FBF59B"),
-        PANTONE_Red_0331_U("#FFB1BE"),
-        PANTONE_Magenta_0521_U("#F8AADD"),
-        PANTONE_Violet_0631_U("#BA93DF"),
-        PANTONE_Blue_0821_U("#6CD1EF"),
-        PANTONE_Green_0921_U("#78E6D0"),
-        PANTONE_Black_0961_U("#9D9994"),
-        PANTONE_801_U("#009CCD"),
-        PANTONE_802_U("#3BD23D"),
-        PANTONE_803_U("#FFE916"),
-        PANTONE_804_U("#FFAA52"),
-        PANTONE_805_U("#FF7477"),
-        PANTONE_806_U("#FF48B0"),
-        PANTONE_807_U("#E838BF"),
-        PANTONE_197_U("#F2A1B2"),
-        PANTONE_2098_U("#6753AA"),
-        PANTONE_198_U("#E76B7C"),
-        PANTONE_199_U("#DD5061"),
-        PANTONE_200_U("#BD4F5C"),
-        PANTONE_232_U("#F16AB7"),
-        PANTONE_7665_U("#725E7C"),
-        PANTONE_2198_U("#3FC9E6"),
-        PANTONE_GCMI_91("#FFFFFF");
-
-        private String colorRGB;
-    }
-
-
 }

@@ -149,7 +149,7 @@ public class GrainTransactionServiceImpl implements GrainTransactionService {
 
     @Override
     public PageImpl<RoGrainTransaction> findGrainTransactionCollectionPage(CustomPage customPage, Long userId) {
-        PageImpl<Long> topicIdPage = collectionService.findCollection(userId, TOPIC_TYPE_1, customPage);
+        PageImpl<Long> topicIdPage = collectionService.findCollection(userId, GRAIN_TRANSACTION, customPage);
         List<GrainTransaction> GrainTransactionList = this.findByIdsNotDelete(topicIdPage.getContent());
         return topicService.resultRoGrainTransactionPage(new PageImpl<>(GrainTransactionList, topicIdPage.getPageable(), topicIdPage.getTotalElements()),
                 userId);
